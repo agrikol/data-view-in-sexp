@@ -10,6 +10,16 @@ class Scalar:
         self.value = value
 
     @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value: int | float | str | bool | None):
+        if not isinstance(new_value, (int, float, str, bool)) and new_value is not None:
+            raise ValueError("Scalar value must be int, float, str, bool, or None")
+        self._value = new_value
+
+    @property
     def type(self) -> str:
         return type(self.value).__name__
 
@@ -23,20 +33,37 @@ class Scalar:
         return bool(self.value)
 
     def __int__(self):
+        if not isinstance(self.value, (int, float)):
+            raise TypeError("Cannot convert non-int scalar to int")
         return int(self.value)
 
     def __float__(self):
+        if not isinstance(self.value, (float, int)):
+            raise TypeError("Cannot convert non-float scalar to float")
         return float(self.value)
 
-    @property
-    def value(self):
-        return self._value
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, Scalar):
+            return self.value == other.value
+        return False
 
-    @value.setter
-    def value(self, new_value: int | float | str | bool | None):
-        if not isinstance(new_value, (int, float, str, bool)) and new_value is not None:
-            raise ValueError("Scalar value must be int, float, str, bool, or None")
-        self._value = new_value
+    def __gt__(self, other: Any) -> bool:
+        if (
+            isinstance(other, Scalar)
+            and isinstance(self.value, (int, float))
+            and isinstance(other.value, (int, float))
+        ):
+            return self.value > other.value
+        return NotImplemented
+
+    def __lt__(self, other: Any) -> bool:
+        if (
+            isinstance(other, Scalar)
+            and isinstance(self.value, (int, float))
+            and isinstance(other.value, (int, float))
+        ):
+            return self.value < other.value
+        return NotImplemented
 
 
 class Node:
@@ -52,9 +79,9 @@ class Node:
     def __init__(
         self,
         name: str,
-        attrs: Dict[str, Scalar] | None,
-        children: List["Node"] | None,
-        value: Scalar | None,
+        attrs: Dict[str, Scalar] | None = None,
+        children: List["Node"] | None = None,
+        value: Scalar | None = None,
     ):
         if value and children:
             raise ValueError("A node cannot have both value and children")
@@ -89,10 +116,10 @@ class Node:
     def to_sexp(self) -> str:  # TODO: indent
         attrs: str = " ".join(f"(:{k} {v})" for k, v in self.attrs.items())
         if self.is_leaf:
-            return f"({self.name} {self.value} {attrs})"
+            return f"({" ".join(filter(None, [self.name, attrs, str(self.value)]))})"
         else:
             children: str = " ".join(child.to_sexp() for child in self.children)
-            return f"({self.name} {attrs} {children})"
+            return f"({" ".join(filter(None, [self.name, attrs, children]))})"
 
 
 # class Element(Node):
