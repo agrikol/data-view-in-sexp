@@ -98,6 +98,10 @@ class Node:
     def name(self, new_name: str):
         if not isinstance(new_name, str) or not new_name:
             raise ValueError("Node name must be a non-empty string")
+        if " " in new_name or "(" in new_name or ")" in new_name:
+            raise ValueError("Node name cannot contain spaces or parentheses")
+        if new_name.startswith(":"):
+            raise ValueError("Node name cannot start with a colon")
         self._name = new_name
 
     @property

@@ -24,3 +24,15 @@ def test_to_sexp_with_children():
     child2 = Node("name", None, None, Scalar("Bob"))
     parent = Node("person", None, [child1, child2], None)
     assert parent.to_sexp() == "(person (age 22) (name Bob))"
+
+
+def test_invalid_node_name():
+    with pytest.raises(ValueError):
+        Node("", None, None, Scalar(10))
+    with pytest.raises(ValueError):
+        Node("invalid name")
+    with pytest.raises(ValueError):
+        Node("(invalid)")
+    with pytest.raises(ValueError):
+        Node(":invalid")
+    assert Node("valid_name").name == "valid_name"
