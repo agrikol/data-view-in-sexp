@@ -21,15 +21,16 @@ class Scalar:
 
     @property
     def type(self) -> str:
-        if self.value is None:
-            return "null"
-        if isinstance(self.value, bool):
-            return "boolean"
-        if isinstance(self.value, (int, float)):
-            return "number"
-        if isinstance(self.value, str):
-            return "string"
-        return "unknown"
+        return type(self.value).__name__
+        # if self.value is None:
+        #     return "null"
+        # if isinstance(self.value, bool):
+        #     return "boolean"
+        # if isinstance(self.value, (int, float)):
+        #     return "number"
+        # if isinstance(self.value, str):
+        #     return "string"
+        # return "unknown"
 
     def __repr__(self):
         return f"Scalar({self.value})"

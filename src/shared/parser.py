@@ -1,6 +1,7 @@
 import re
 from typing import List, Tuple, Dict, Any
 from src.shared.model import Node, Scalar
+from src.enum.parser_enums import TokenTypes
 import logging
 from dataclasses import dataclass
 from enum import Enum
@@ -19,19 +20,6 @@ class Token:
     pos: int
 
 
-class TokenTypes(Enum):
-    LPAREN: str = "LPAREN"
-    RPAREN: str = "RPAREN"
-    STRING: str = "STRING"
-    NUMBER: str = "NUMBER"
-    BOOL: str = "BOOL"
-    NULL: str = "NULL"
-    KEY: str = "KEY"
-    SYMBOL: str = "SYMBOL"
-    WHITESPACE: str = "WHITESPACE"
-    EOF: str = "EOF"
-
-
 class Lexer:
     """Лексер для разбора входного текста на токены.
     Поддерживает скобки, строки, числа, булевы значения, null и символы.
@@ -39,11 +27,11 @@ class Lexer:
     """
 
     def __init__(self, text: str):
-        self.text = text
-        self.pos = 0
+        self.text: str = text
+        self.pos: int = 0
 
     def tokenize(self) -> List[Token]:
-        tokens = []
+        tokens: List[Token] = []
         while not self._eof():
             self._skip_whitespace()
             ch = self._peek()
@@ -81,7 +69,7 @@ class Lexer:
         self.pos += 1
         return self.text[self.pos - 1]
 
-    def _string(self) -> Token:
+    def _string(self) -> Token | None:
         start_pos = self.pos
         self._advance()
         value = ""
@@ -107,9 +95,10 @@ class Lexer:
                 self._peek(1).isdigit()
             except Exception:
                 raise ParserError("Invalid number format")
-            value += self._advance()
-            while not self._eof() and self._peek().isdigit():
+            else:
                 value += self._advance()
+                while not self._eof() and self._peek().isdigit():
+                    value += self._advance()
         return Token(TokenTypes.NUMBER.name, value, start_pos)
 
     def _symbol(self) -> Token:
@@ -123,7 +112,82 @@ class Lexer:
             self._advance()
 
         if value in ("true", "false"):
-            return Token(TokenTypes.BOOL.name, value, start_pos)
+            return Token(TokenTypes.BOOLEAN.name, value, start_pos)
         elif value == "null":
             return Token(TokenTypes.NULL.name, value, start_pos)
         return Token(TokenTypes.SYMBOL.name, value, start_pos)
+
+
+class Parser:
+    def __init__(self, tokens: List[Token]):
+        self.tokens: List[Token] = tokens
+        self.pos: int = 0
+
+    def parse(self) -> Node:
+        logging.debug(f"Tokens: {self.tokens}")
+        node = self._parse_node(self.tokens)
+        self._expect_eof()
+        return node
+
+    def _peek(self, offset: int = 0) -> Token | None:
+        if self.pos + offset < len(self.tokens):
+            return self.tokens[self.pos + offset]
+
+    def _expect_eof(self) -> None:
+        if self._peek().type != TokenTypes.EOF.name:
+            raise ParserError("Expected end of input (EOF)")
+
+    def _expect(self, token_type: str) -> Token:
+        token = self._peek()
+        if token is None or token.type != token_type:
+            raise ParserError(
+                f"Expected token of type {token_type}, got {token} at position {self.pos}"
+            )
+        self.pos += 1
+        return token
+
+    def _advance(self) -> Token:
+        token = self._peek()
+        if token is None:
+            raise ParserError("Unexpected end of input")
+        self.pos += 1
+        return token
+
+    def _is_attr(self) -> bool: ...
+
+    def _parse_attr(self) -> Tuple[Dict[str, Scalar], List[Token]]: ...
+
+    def _parse_leaf(self) -> Tuple[Node, List[Token]]: ...
+
+    def _parse_node(self) -> Node:
+        self._expect(TokenTypes.LPAREN.name)
+
+        name: str = self._expect(TokenTypes.SYMBOL.name).value
+        attrs: Dict[str, Scalar] = {}
+        children: List[Node] | None = []
+        leaf_value: Scalar | None = None
+        if self._is_attr():
+            attrs = self._parse_attr()
+
+        self._expect(TokenTypes.RPAREN.name)
+        return Node(name, attrs, children, leaf_value)
+
+    def _peek_type(self) -> str | None:
+        token = self._peek()
+        if token:
+            return token.type
+
+
+#     def _tokenize(self, text: str) -> List[Token]:
+#         tokens = []
+#         ...
+
+#     def _parse_tokens(self, tokens: List[Token]) -> Tuple[Node, List[Token]]: ...
+
+#     def _parse_node(self, tokens: List[Token]) -> Tuple[Node, List[Token]]: ...
+
+#     def _parse_leaf(self, tokens: List[Token]) -> Tuple[Node, List[Token]]: ...
+
+#     def _parse_attr(
+#         self, tokens: List[Token]
+#     ) -> Tuple[Dict[str, Scalar], List[Token]]: ...

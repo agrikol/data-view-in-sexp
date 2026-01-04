@@ -31,7 +31,7 @@ def test_lexer_string_and_bool():
         TokenTypes.SYMBOL.name,
         TokenTypes.STRING.name,
         TokenTypes.SYMBOL.name,
-        TokenTypes.BOOL.name,
+        TokenTypes.BOOLEAN.name,
         TokenTypes.RPAREN.name,
         TokenTypes.EOF.name,
     ]
