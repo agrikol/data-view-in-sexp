@@ -14,4 +14,4 @@ class TokenTypes(Enum):
     EOF: str = "EOF"
 
 
-LEAF_TYPES: set = {"STRING", "NUMBER", "BOOLEAN", "NULL"}
+SCALAR_TYPES: set = {"STRING", "NUMBER", "BOOLEAN", "NULL"}

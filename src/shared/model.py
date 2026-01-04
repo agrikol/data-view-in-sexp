@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Union
 
 class Scalar:
     """Представление скаляров (int, float, str, bool, None).
-    Позволяет хранить значение и получать его тип.
+    Позволяет хранить значение, получать его тип, делать сравнения и приведения к другим типам.
     """
 
     def __init__(self, value: int | float | str | bool | None):
@@ -22,15 +22,6 @@ class Scalar:
     @property
     def type(self) -> str:
         return type(self.value).__name__
-        # if self.value is None:
-        #     return "null"
-        # if isinstance(self.value, bool):
-        #     return "boolean"
-        # if isinstance(self.value, (int, float)):
-        #     return "number"
-        # if isinstance(self.value, str):
-        #     return "string"
-        # return "unknown"
 
     def __repr__(self):
         return f"Scalar({self.value})"
@@ -74,15 +65,24 @@ class Scalar:
             return self.value < other.value
         return NotImplemented
 
+    def to_sexp(self) -> str:
+        if isinstance(self.value, str):
+            return f'"{self.value}"'
+        if self.value is None:
+            return "null"
+        if isinstance(self.value, bool):
+            return "true" if self.value else "false"
+        return str(self.value)
+
 
 class Node:
     """Представление узла дерева.
     Узел может иметь имя, атрибуты (словарь скаляров), дочерние узлы и значение (скаляр).
     Узел не может иметь одновременно значение и дочерние узлы.
-    - is_leaf() -> bool: возвращает True, если узел является листом (имеет значение).
-    - add_child(child: Node): добавляет дочерний узел.
-    - get_childs(name: str) -> List[Node]: возвращает список дочерних узлов с заданным именем.
-    - to_sexp() -> str: возвращает строковое представление узла в формате S-expr.
+    >>> is_leaf() -> bool: возвращает True, если узел является листом (имеет значение).
+    >>> add_child(child: Node): добавляет дочерний узел.
+    >>> get_childs(name: str) -> List[Node]: возвращает список дочерних узлов с заданным именем.
+    >>> to_sexp() -> str: возвращает строковое представление узла в формате S-expr.
     """
 
     def __init__(
@@ -127,9 +127,21 @@ class Node:
         return [child for child in childs if child.name == name]
 
     def to_sexp(self) -> str:  # TODO: indent
-        attrs: str = " ".join(f"(:{k} {v})" for k, v in self.attrs.items())
+        attrs: list[str] = " ".join(
+            [f"(:{k} {v.to_sexp()})" for k, v in self.attrs.items()]
+        )
         if self.is_leaf:
-            return f"({" ".join(filter(None, [self.name, attrs, str(self.value)]))})"
+            return (
+                f"({" ".join(filter(None, [self.name, attrs, self.value.to_sexp()]))})"
+            )
         else:
             children: str = " ".join(child.to_sexp() for child in self.children)
             return f"({" ".join(filter(None, [self.name, attrs, children]))})"
+
+
+child1 = Node("age", {"name": Scalar("Alice")}, None, Scalar(22))
+child2 = Node("name", None, None, Scalar("Bob"))
+parent = Node("person", None, [child1, child2], None)
+res = parent.to_sexp()
+print(res)  # (person (age 22) (name "Bob"))
+print(res == '(person (age 22) (name "Bob"))')  # True

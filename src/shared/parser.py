@@ -1,7 +1,7 @@
 import re
 from typing import List, Tuple, Dict, Any
 from src.shared.model import Node, Scalar
-from src.enum.parser_enums import TokenTypes
+from src.enum.parser_enums import TokenTypes, SCALAR_TYPES
 import logging
 from dataclasses import dataclass
 from enum import Enum
@@ -36,7 +36,6 @@ class Lexer:
             self._skip_whitespace()
             ch = self._peek()
 
-            logging.debug(f"Current char: {str(ch)} at pos {self.pos}")
             if ch is None:
                 break
             if ch == "(":
@@ -125,7 +124,7 @@ class Parser:
 
     def parse(self) -> Node:
         logging.debug(f"Tokens: {self.tokens}")
-        node = self._parse_node(self.tokens)
+        node = self._parse_node()
         self._expect_eof()
         return node
 
@@ -153,11 +152,44 @@ class Parser:
         self.pos += 1
         return token
 
-    def _is_attr(self) -> bool: ...
+    def _is_attr(self) -> bool:
+        t1 = self._peek()
+        t2 = self._peek(1)
+        return (
+            t1 is not None
+            and t2 is not None
+            and t1.type == TokenTypes.LPAREN.name
+            and t2.type == TokenTypes.SYMBOL.name
+            and t2.value.startswith(":")
+        )
 
-    def _parse_attr(self) -> Tuple[Dict[str, Scalar], List[Token]]: ...
+    def _parse_attr(self) -> Tuple[str, Scalar]:
+        self._expect(TokenTypes.LPAREN.name)
+        key_token = self._expect(TokenTypes.SYMBOL.name)
+        if not key_token.value.startswith(":"):
+            raise ParserError("Attribute key must start with ':'")
+        value = self._parse_scalar()
+        self._expect(TokenTypes.RPAREN.name)
+        return key_token.value[1:], value
 
-    def _parse_leaf(self) -> Tuple[Node, List[Token]]: ...
+    def _parse_scalar(self) -> Scalar:
+        token = self._advance()
+
+        if token.type not in SCALAR_TYPES:
+            raise ParserError(f"Expected scalar type, got {token}")
+        if token.type == TokenTypes.STRING.name:
+            return Scalar(token.value)
+        elif token.type == TokenTypes.NUMBER.name:
+            if "." in token.value:
+                return Scalar(float(token.value))
+            else:
+                return Scalar(int(token.value))
+        elif token.type == TokenTypes.BOOLEAN.name:
+            return Scalar(token.value == "true")
+        elif token.type == TokenTypes.NULL.name:
+            return Scalar(None)
+
+        raise ParserError(f"Expected scalar type, got {token}")
 
     def _parse_node(self) -> Node:
         self._expect(TokenTypes.LPAREN.name)
@@ -166,28 +198,20 @@ class Parser:
         attrs: Dict[str, Scalar] = {}
         children: List[Node] | None = []
         leaf_value: Scalar | None = None
-        if self._is_attr():
-            attrs = self._parse_attr()
 
+        while self._is_attr():
+            k, v = self._parse_attr()
+            attrs[k] = v
+        if self._peek().type in SCALAR_TYPES:
+            leaf_value = self._parse_scalar()
+        else:
+            while self._peek().type == TokenTypes.LPAREN.name:
+                children.append(self._parse_node())
         self._expect(TokenTypes.RPAREN.name)
-        return Node(name, attrs, children, leaf_value)
+
+        return Node(name=name, attrs=attrs, children=children, value=leaf_value)
 
     def _peek_type(self) -> str | None:
         token = self._peek()
         if token:
             return token.type
-
-
-#     def _tokenize(self, text: str) -> List[Token]:
-#         tokens = []
-#         ...
-
-#     def _parse_tokens(self, tokens: List[Token]) -> Tuple[Node, List[Token]]: ...
-
-#     def _parse_node(self, tokens: List[Token]) -> Tuple[Node, List[Token]]: ...
-
-#     def _parse_leaf(self, tokens: List[Token]) -> Tuple[Node, List[Token]]: ...
-
-#     def _parse_attr(
-#         self, tokens: List[Token]
-#     ) -> Tuple[Dict[str, Scalar], List[Token]]: ...
