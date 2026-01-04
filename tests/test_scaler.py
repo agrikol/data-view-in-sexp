@@ -5,7 +5,7 @@ from src.shared.model import Scalar
 def test_scalar_int():
     s = Scalar(10)
     assert s.value == 10
-    assert s.type == "int"
+    assert s.type == "number"
     assert int(s) == 10
     assert float(s) == 10.0
     assert bool(s) is True
@@ -15,7 +15,7 @@ def test_scalar_int():
 def test_scalar_float():
     s = Scalar(3.14)
     assert s.value == 3.14
-    assert s.type == "float"
+    assert s.type == "number"
     assert int(s) == 3
     assert float(s) == 3.14
     assert bool(s) is True
@@ -25,7 +25,7 @@ def test_scalar_float():
 def test_scalar_str():
     s = Scalar("hello")
     assert s.value == "hello"
-    assert s.type == "str"
+    assert s.type == "string"
     assert str(s) == "hello"
     assert bool(s) is True
 
@@ -33,7 +33,7 @@ def test_scalar_str():
 def test_scalar_bool():
     s = Scalar(True)
     assert s.value is True
-    assert s.type == "bool"
+    assert s.type == "boolean"
     assert bool(s) is True
     assert str(s) == "True"
 
@@ -41,7 +41,7 @@ def test_scalar_bool():
 def test_scalar_none():
     s = Scalar(None)
     assert s.value is None
-    assert s.type == "NoneType"
+    assert s.type == "null"
     assert bool(s) is False
     assert str(s) == "None"
 
