@@ -127,21 +127,12 @@ class Node:
         return [child for child in childs if child.name == name]
 
     def to_sexp(self) -> str:  # TODO: indent
-        attrs: list[str] = " ".join(
-            [f"(:{k} {v.to_sexp()})" for k, v in self.attrs.items()]
-        )
+        attrs: str = " ".join([f"(:{k} {v.to_sexp()})" for k, v in self.attrs.items()])
         if self.is_leaf:
+            assert self.value is not None
             return (
                 f"({" ".join(filter(None, [self.name, attrs, self.value.to_sexp()]))})"
             )
         else:
             children: str = " ".join(child.to_sexp() for child in self.children)
             return f"({" ".join(filter(None, [self.name, attrs, children]))})"
-
-
-child1 = Node("age", {"name": Scalar("Alice")}, None, Scalar(22))
-child2 = Node("name", None, None, Scalar("Bob"))
-parent = Node("person", None, [child1, child2], None)
-res = parent.to_sexp()
-print(res)  # (person (age 22) (name "Bob"))
-print(res == '(person (age 22) (name "Bob"))')  # True

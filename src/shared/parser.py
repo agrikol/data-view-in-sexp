@@ -53,7 +53,7 @@ class Lexer:
         tokens.append(Token(TokenTypes.EOF.name, "", self.pos))
         return tokens
 
-    def _peek(self, offset: int = 0) -> str | None:
+    def _peek(self, offset: int = 0) -> str:
         if self.pos + offset < len(self.text):
             return self.text[self.pos + offset]
 
@@ -64,7 +64,7 @@ class Lexer:
         while not self._eof() and self.text[self.pos].isspace():
             self.pos += 1
 
-    def _advance(self) -> None:
+    def _advance(self) -> str:
         self.pos += 1
         return self.text[self.pos - 1]
 
@@ -78,7 +78,8 @@ class Lexer:
             if ch == '"':
                 self._advance()
                 return Token(TokenTypes.STRING.name, value, start_pos)
-            value += ch
+            if ch is not None:
+                value += ch
             self._advance()
         raise SyntaxError("Unterminated string literal")
 
