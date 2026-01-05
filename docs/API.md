@@ -38,7 +38,7 @@ loads(text: str) -> Node
 ```python
 from src.api.api import loads
 
-ast = loads('(person (:name "Alice") (:age 30))')
+ast = loads(text='(person (:name "Alice") (:age 30))') # Node(name='person', attrs={'name': Scalar('Alice'), 'age': Scalar(30)}, children=None, value=None)
 ```
 
 ---
@@ -66,5 +66,6 @@ dumps(node: Node) -> str
 ```python
 from src.api.api import dumps
 
-text = dumps(ast)
+ast = Node(name='person', attrs={'name': Scalar('Alice'), 'age': Scalar(30)}, children=None, value=None)
+text = dumps(ast) # '(person (:name "Alice") (:age 30))'
 ```
