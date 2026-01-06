@@ -1,56 +1,7 @@
 from src.shared.model import Node, Scalar
 from dataclasses import dataclass, field
 from typing import Literal
-
-
-class InterpreterError(Exception):
-    pass
-
-
-test_schema_sexp = """
-(schema
-  (element
-    (:name "book")
-    (attrs
-      (attr (:name "lang") (type "string") (required false)))
-    (children
-      (element
-        (:name "title")
-        (type "string")
-        (required true))
-
-      (element
-        (:name "author")
-        (type "string")
-        (required true)
-        (attrs
-          (attr (:name "born") (type "number") (required false))))
-
-      (element
-        (:name "year")
-        (type "number")
-        (required true))
-
-      (element
-        (:name "tags")
-        (children
-          (element
-            (:name "tag")
-            (type "string")
-            (min_occurs 0)
-            (max_occurs null)))))))
-"""
-
-test_sexp = """
-(book
-  (:lang "ru")
-  (title "Война и мир")
-  (author (:born 1828) "Лев Толстой")
-  (year 1869)
-  (tags
-    (tag "classic")
-    (tag "novel")))
-"""
+from src.errors.sexp_erros import InterpreterError
 
 
 @dataclass
@@ -66,14 +17,6 @@ class SchemaNode:
     children: list["SchemaNode"] = field(default_factory=list)
 
 
-TYPE_MAP = {
-    "string": str,
-    "number": (int, float),
-    "boolean": bool,
-    "null": type(None),
-}
-
-
 class Interpreter:
     def __init__(self, ast: Node):
         self.ast: Node = ast
@@ -87,7 +30,6 @@ class Interpreter:
     def _interpret_node(self, node: Node) -> SchemaNode:
         name = node.name
         attr = node.attrs
-        # scalar = node.value
         children = node.children
 
         if name != "element":
