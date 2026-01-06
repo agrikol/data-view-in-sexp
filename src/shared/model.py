@@ -90,14 +90,14 @@ class Node:
         name: str,
         attrs: Dict[str, Scalar] | None = None,
         children: List["Node"] | None = None,
-        value: Scalar | None = None,
+        scalar: Scalar | None = None,
     ):
-        if value and children:
+        if scalar and children:
             raise ValueError("A node cannot have both value and children")
         self.name = name
         self.attrs = attrs or {}
         self.children = children or []
-        self.value = value
+        self.scalar = scalar
 
     @property
     def name(self) -> str:
@@ -115,7 +115,7 @@ class Node:
 
     @property
     def is_leaf(self) -> bool:
-        return self.value is not None
+        return self.scalar is not None
 
     def add_child(self, child: "Node"):
         if self.is_leaf:
@@ -133,9 +133,9 @@ class Node:
     def to_sexp(self) -> str:  # TODO: indent
         attrs: str = " ".join([f"(:{k} {v.to_sexp()})" for k, v in self.attrs.items()])
         if self.is_leaf:
-            assert self.value is not None
+            assert self.scalar is not None
             return (
-                f"({" ".join(filter(None, [self.name, attrs, self.value.to_sexp()]))})"
+                f"({" ".join(filter(None, [self.name, attrs, self.scalar.to_sexp()]))})"
             )
         else:
             children: str = " ".join(child.to_sexp() for child in self.children)
@@ -144,7 +144,7 @@ class Node:
     def __repr__(self):
         return (
             f"Node(name={self.name!r}, attrs={self.attrs!r}, "
-            f"children={self.children!r}, value={self.value!r})"
+            f"children={self.children!r}, value={self.scalar!r})"
         )
 
     def __str__(self):

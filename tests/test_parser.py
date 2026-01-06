@@ -9,7 +9,7 @@ def test_parser_simple_node():
     node = loads(text)
     assert node.name == "age"
     assert node.is_leaf
-    assert node.value.value == 22
+    assert node.scalar.value == 22
 
 
 def test_parser_empty_node():
@@ -45,7 +45,7 @@ def test_parser_node_with_children():
     child = node.children[0]
     assert child.name == "child"
     assert child.attrs["name"].value == "Ivan"
-    assert child.value.value == 10
+    assert child.scalar.value == 10
 
 
 def test_parser_invalid_syntax():
