@@ -122,9 +122,13 @@ class Node:
             raise ValueError("Cannot add children to a leaf node")
         self.children.append(child)
 
-    def get_childs(self, name: str) -> List["Node"]:
+    def get_childs_by_name(self, name: str) -> List["Node"]:
         childs: List["Node"] = self.children
         return [child for child in childs if child.name == name]
+
+    @property
+    def get_childs(self) -> List["Node"]:
+        return self.children
 
     def to_sexp(self) -> str:  # TODO: indent
         attrs: str = " ".join([f"(:{k} {v.to_sexp()})" for k, v in self.attrs.items()])
@@ -136,3 +140,12 @@ class Node:
         else:
             children: str = " ".join(child.to_sexp() for child in self.children)
             return f"({" ".join(filter(None, [self.name, attrs, children]))})"
+
+    def __repr__(self):
+        return (
+            f"Node(name={self.name!r}, attrs={self.attrs!r}, "
+            f"children={self.children!r}, value={self.value!r})"
+        )
+
+    def __str__(self):
+        return self.to_sexp()
