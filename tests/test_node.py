@@ -3,10 +3,10 @@ from src.shared.model import Node, Scalar
 
 
 def test_leaf_node():
-    node = Node(name="age", attrs=None, children=None, value=Scalar(22))
+    node = Node(name="age", attrs=None, children=None, scalar=Scalar(22))
     assert node.is_leaf
-    assert isinstance(node.value, Scalar)
-    assert node.value.value == 22
+    assert isinstance(node.scalar, Scalar)
+    assert node.scalar.value == 22
 
 
 def test_to_sexp_leaf():
@@ -21,7 +21,7 @@ def test_to_sexp_with_attrs():
 
 def test_to_sexp_boolean_and_null_attrs():
     node = Node(
-        "settings", {"active": Scalar(True), "value": Scalar(None)}, value=Scalar(None)
+        "settings", {"active": Scalar(True), "value": Scalar(None)}, scalar=Scalar(None)
     )
     assert node.to_sexp() == "(settings (:active true) (:value null) null)"
 

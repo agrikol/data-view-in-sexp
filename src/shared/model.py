@@ -90,14 +90,14 @@ class Node:
         name: str,
         attrs: Dict[str, Scalar] | None = None,
         children: List["Node"] | None = None,
-        value: Scalar | None = None,
+        scalar: Scalar | None = None,
     ):
-        if value and children:
+        if scalar and children:
             raise ValueError("A node cannot have both value and children")
         self.name = name
         self.attrs = attrs or {}
         self.children = children or []
-        self.value = value
+        self.scalar = scalar
 
     @property
     def name(self) -> str:
@@ -115,24 +115,37 @@ class Node:
 
     @property
     def is_leaf(self) -> bool:
-        return self.value is not None
+        return self.scalar is not None
 
     def add_child(self, child: "Node"):
         if self.is_leaf:
             raise ValueError("Cannot add children to a leaf node")
         self.children.append(child)
 
-    def get_childs(self, name: str) -> List["Node"]:
+    def get_childs_by_name(self, name: str) -> List["Node"]:
         childs: List["Node"] = self.children
         return [child for child in childs if child.name == name]
+
+    @property
+    def get_childs(self) -> List["Node"]:
+        return self.children
 
     def to_sexp(self) -> str:  # TODO: indent
         attrs: str = " ".join([f"(:{k} {v.to_sexp()})" for k, v in self.attrs.items()])
         if self.is_leaf:
-            assert self.value is not None
+            assert self.scalar is not None
             return (
-                f"({" ".join(filter(None, [self.name, attrs, self.value.to_sexp()]))})"
+                f"({" ".join(filter(None, [self.name, attrs, self.scalar.to_sexp()]))})"
             )
         else:
             children: str = " ".join(child.to_sexp() for child in self.children)
             return f"({" ".join(filter(None, [self.name, attrs, children]))})"
+
+    def __repr__(self):
+        return (
+            f"Node(name={self.name!r}, attrs={self.attrs!r}, "
+            f"children={self.children!r}, value={self.scalar!r})"
+        )
+
+    def __str__(self):
+        return self.to_sexp()

@@ -1,16 +1,12 @@
-import re
 from typing import List, Tuple, Dict, Any
 from src.shared.model import Node, Scalar
 from src.enum.parser_enums import TokenTypes, SCALAR_TYPES
 import logging
 from dataclasses import dataclass
 from enum import Enum
+from src.errors.sexp_erros import ParserError
 
 logging.basicConfig(level=logging.DEBUG)
-
-
-class ParserError(Exception):
-    pass
 
 
 @dataclass
@@ -124,7 +120,6 @@ class Parser:
         self.pos: int = 0
 
     def parse(self) -> Node:
-        logging.debug(f"Tokens: {self.tokens}")
         node = self._parse_node()
         self._expect_eof()
         return node
@@ -210,7 +205,7 @@ class Parser:
                 children.append(self._parse_node())
         self._expect(TokenTypes.RPAREN.name)
 
-        return Node(name=name, attrs=attrs, children=children, value=leaf_value)
+        return Node(name=name, attrs=attrs, children=children, scalar=leaf_value)
 
     def _peek_type(self) -> str | None:
         token = self._peek()
