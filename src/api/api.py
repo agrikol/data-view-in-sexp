@@ -2,6 +2,7 @@ from src.shared.parser import Lexer, Parser
 from src.shared.sexp_schema.interpreter import Interpreter, SchemaNode
 from src.shared.sexp_schema.validator import Validator
 from src.shared.model import Node
+from src.visualizer.cli import TreeRenderer
 
 
 def loads(text: str) -> Node:
@@ -96,3 +97,9 @@ def validate(document: Node, schema_document: Node) -> bool:
 
     schema = Interpreter(schema_document).interpret()
     return Validator(document, schema).validate()
+
+
+def tree(document: Node | str) -> None:
+    if isinstance(document, str):
+        document = loads(document)
+    TreeRenderer().render(document)
