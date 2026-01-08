@@ -49,16 +49,18 @@ class Interpreter:
                     schema.value_type = child.scalar
                 case "required":
                     self._check_required_correctness(child.scalar.value)
-                    schema.required = child.scalar == "true"
+                    schema.required = child.scalar == Scalar(True)
                 case "min_occurs":
+                    self._check_min_occurs_correctness(child.scalar.value, schema)
                     schema.min_occurs = int(child.scalar)
                 case "max_occurs":
+                    self._check_max_occurs_correctness(child.scalar.value, schema)
                     schema.max_occurs = (
                         int(child.scalar)
                         if child.scalar.value is not None
+                        and child.scalar.value != "unbounded"
                         else "unbounded"
                     )
-                    self._check_occurs_correctness(schema)
 
                 case "attrs":
                     self._collect_attrs(child, schema)
@@ -71,7 +73,7 @@ class Interpreter:
             if attr.name != "attr":
                 raise InterpreterError("Attrs can only contain attr")
             attr_name = attr.attrs.get("name")
-            if attr_name is None:
+            if attr_name.value == "" or attr_name is None:
                 raise InterpreterError("Attribute must have name attribute")
 
             attr_schema = SchemaNode(name=attr_name)
@@ -91,12 +93,14 @@ class Interpreter:
         for element in node.children:
             schema.children.append(self._interpret_node(element))
 
-    def _check_occurs_correctness(self, schema: SchemaNode):
-        if schema.max_occurs != "unbounded" and schema.max_occurs < schema.min_occurs:
+    def _check_max_occurs_correctness(self, value, schema: SchemaNode):
+        if value != "unbounded" and value < schema.min_occurs:
             raise InterpreterError("Max_occurs cannot be less than min_occurs")
-        if schema.min_occurs < 1 and schema.required:
+
+    def _check_min_occurs_correctness(self, value: int, schema: SchemaNode):
+        if value < 1 and schema.required:
             raise InterpreterError("Min_occurs cannot be with required attribute")
-        if schema.min_occurs < 0:
+        if value < 0:
             raise InterpreterError("Min_occurs cannot be negative")
 
     def _check_required_correctness(self, value: bool) -> None:
