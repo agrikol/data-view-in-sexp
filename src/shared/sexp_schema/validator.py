@@ -60,9 +60,7 @@ class Validator:
                     f"Attribute '{name}' is not allowed in element '{schema.name}'"
                 )
             attr_schema: SchemaNode = schema.attrs[name]
-            # print(attr_schema.value_type, value.value, type(attr_schema.value_type))
             py_type = TYPE_MAP.get(attr_schema.value_type.value)
-            # print(value.value, py_type)
             if not isinstance(value.value, py_type):
                 raise ValidationError(
                     f"Attribute '{name}' must have a value of type {attr_schema.value_type}"
