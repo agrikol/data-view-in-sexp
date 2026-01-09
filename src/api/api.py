@@ -91,7 +91,8 @@ def validate(document: Node, schema_document: Node) -> bool:
 
     Example
     --------
-    >>> validate(Node(name="person", attrs={"name": Scalar("Alice")}), Node(name="schema", attrs={"name": Scalar("person")}))
+    >>> validate(Node(name="person", attrs={"name": Scalar("Alice")}), \
+        Node(name="schema", attrs={"name": Scalar("person")}))
     # True
     """
 
@@ -100,6 +101,27 @@ def validate(document: Node, schema_document: Node) -> bool:
 
 
 def tree(document: Node | str) -> None:
+    """
+    Print document as a tree to stdout. \
+    You can put the document as a raw S-exp string or as a Node.
+
+    Parameters
+    ----------
+    document: Node | str
+        Document to print. If it is a string, it is parsed into a Node.
+
+    Returns
+    -------
+    None
+
+    Example
+    --------
+    >>> tree(Node(name="person", attrs={"name": Scalar("Alice")}))
+    # Print the document as a tree
+
+    >>> tree('(:name "Alice")')
+    # Print the document as a tree
+    """
     if isinstance(document, str):
         document = loads(document)
     TreeRenderer().render(document)
