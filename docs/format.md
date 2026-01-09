@@ -40,13 +40,13 @@ Value — скалярное значение (см. ниже).
 Если не список, а скаляр — это листовое значение (только в листовом узле).
 
 ### Грамматика
-document   ::= node
-node       ::= "(" name node_body ")"
-node_body  ::= attribute* (value | child*)?
-attribute  ::= "(" ":"name scalar ")"
-child      ::= node
-value      ::= scalar
-scalar     ::= string | number | boolean | null
+- document   ::= node
+- node       ::= "(" name node_body ")"
+- node_body  ::= attribute* (value | child*)?
+- attribute  ::= "(" ":"name scalar ")"
+- child      ::= node
+- value      ::= scalar
+- scalar     ::= string | number | boolean | null
 
 ---
 
