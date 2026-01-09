@@ -36,7 +36,7 @@ class TreeRenderer:
                 style="#B6B6B6",
             )
 
-        out.append(node.name, style="bold cyan")
+        out.append(node.name, style="#5BB8FF")
 
         if node.attrs:
             for k, v in node.attrs.items():

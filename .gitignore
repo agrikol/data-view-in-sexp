@@ -4,3 +4,4 @@ __pycache__/
 .vscode/
 .pytest_cache/
 test_2.ipynb
+*.egg-info/

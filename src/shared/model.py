@@ -117,10 +117,13 @@ class Node:
     def is_leaf(self) -> bool:
         return self.scalar is not None
 
-    def add_child(self, child: "Node"):
+    def add_child(self, *args: "Node"):
         if self.is_leaf:
             raise ValueError("Cannot add children to a leaf node")
-        self.children.append(child)
+        for arg in args:
+            if not isinstance(arg, Node):
+                raise ValueError("Child must be a Node")
+            self.children.append(arg)
 
     def get_childs_by_name(self, name: str) -> List["Node"]:
         childs: List["Node"] = self.children

@@ -1,7 +1,7 @@
 import pytest
 from src.shared.sexp_schema.interpreter import Interpreter, SchemaNode
 from src.shared.model import Scalar
-from src.api.api import loads, dumps
+from src.api.core import loads, dumps
 from src.errors.sexp_erros import InterpreterError
 
 

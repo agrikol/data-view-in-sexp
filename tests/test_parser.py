@@ -1,7 +1,7 @@
 from email.mime import text
 import pytest
 from src.shared.parser import Lexer, TokenTypes, ParserError, Parser, Token
-from src.api.api import loads
+from src.api.core import loads
 
 
 def test_parser_simple_node():

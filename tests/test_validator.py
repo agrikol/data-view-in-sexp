@@ -1,5 +1,5 @@
 import pytest
-from src.api.api import loads, validate, dumps
+from src.api.core import loads, validate, dumps
 from src.errors.sexp_erros import ValidationError
 from src.shared.model import Node, Scalar
 

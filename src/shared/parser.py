@@ -68,7 +68,6 @@ class Lexer:
         start_pos = self.pos
         self._advance()
         value = ""
-        print(value)
         while not self._eof():
             ch = self._peek()
             if ch == '"':

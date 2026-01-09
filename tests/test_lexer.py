@@ -23,7 +23,6 @@ def test_lexer_string_and_bool():
     text = '(set name "Alice" active true)'
     lexer = Lexer(text)
     tokens = lexer.tokenize()
-    print(tokens)
 
     expected_types = [
         TokenTypes.LPAREN.name,

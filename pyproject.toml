@@ -1,0 +1,11 @@
+[project]
+name = "sexp-repr"
+version = "0.1.0"
+description = "S-expressions data representation in Python"
+requires-python = ">=3.12"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
