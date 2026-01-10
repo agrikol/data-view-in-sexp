@@ -25,7 +25,7 @@
 
 ---
 
-## Установка на Linux / macOS:
+## Установка на Linux / macOS
 ```bash
 git clone https://github.com/agrikol/data-view-in-sexp.git && cd data-view-in-sexp
 ```
@@ -44,10 +44,10 @@ python3
 
 ```python
 >>> from sexp_repr import loads, dumps, validate, tree
->>>tree('(book "S-Exp")')
+>>> tree('(book "S-Exp")')
 ```
 
-# Установка на Windows:
+## Установка на Windows
 ```shell
 git clone https://github.com/agrikol/data-view-in-sexp.git ; cd data-view-in-sexp
 ```
@@ -70,7 +70,7 @@ python
 
 ```python
 >>> from sexp_repr import loads, dumps, validate, tree
->>>tree('(book "S-Exp")')
+>>> tree('(book "S-Exp")')
 ```
 
 
