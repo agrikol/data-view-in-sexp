@@ -3,5 +3,5 @@ test.py
 __pycache__/
 .vscode/
 .pytest_cache/
-test_2.ipynb
 *.egg-info/
+.DS_Store
