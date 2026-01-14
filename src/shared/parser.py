@@ -1,9 +1,8 @@
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict
 from src.shared.model import Node, Scalar
 from src.enum.parser_enums import TokenTypes, SCALAR_TYPES
 import logging
 from dataclasses import dataclass
-from enum import Enum
 from src.errors.sexp_erros import ParserError
 
 logging.basicConfig(level=logging.DEBUG)
