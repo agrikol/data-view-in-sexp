@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class SPathTokens(Enum):
+class SPathTypes(Enum):
     IDENT = "IDENT"
     SLASH = "/"
     DOUBLE_SLASH = "//"
