@@ -1,6 +1,6 @@
 from typing import List
 from ..core.lexer import BaseLexer, Token
-from ..enum.spath_types import SPathTypes
+from ..enums.spath_types import SPathTypes
 from ..errors.sexp_erros import ParserError
 
 

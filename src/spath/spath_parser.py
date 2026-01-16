@@ -1,5 +1,5 @@
 from ..core.parser import BaseParser
-from ..enum.spath_types import SPathTypes
+from ..enums.spath_types import SPathTypes
 
 from ..errors.sexp_erros import ParserError
 from typing import List
@@ -11,6 +11,14 @@ from spath.ast import (
     FilterTarget,
     CompareOp,
 )
+
+
+TYPES_TO_PYTYPES: dict = {
+    "NUMBER": int,
+    "STRING": str,
+    "BOOLEAN": bool,
+    "NULL": None,
+}
 
 
 class SPathParser(BaseParser):
@@ -106,11 +114,12 @@ class SPathParser(BaseParser):
     def _parse_literal(self):
         token = self._advance()
 
-        if token.type in (
-            SPathTypes.STRING.name,
-            SPathTypes.NUMBER.name,
-            SPathTypes.BOOLEAN.name,
-            SPathTypes.NULL.name,
-        ):
-            return token.value
-        raise ParserError(f"Expected literal, got {token}")
+        match token.type:
+            case "NUMBER" | "STRING":
+                return TYPES_TO_PYTYPES[token.type](token.value)
+            case "BOOLEAN":
+                return TYPES_TO_PYTYPES[token.type](token.value == "true")
+            case "NULL":
+                return TYPES_TO_PYTYPES[token.type]
+            case _:
+                raise ParserError(f"Expected literal, got {token}")

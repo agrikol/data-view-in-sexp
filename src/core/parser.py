@@ -1,5 +1,5 @@
 from errors.sexp_erros import ParserError
-from core.lexer import Token
+from .lexer import Token
 from typing import List
 
 

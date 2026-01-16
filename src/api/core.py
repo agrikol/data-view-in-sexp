@@ -1,6 +1,6 @@
 from src.shared.parser import Lexer, Parser
-from src.shared.sexp_schema.interpreter import Interpreter, SchemaNode
-from src.shared.sexp_schema.validator import Validator
+from src.sexp_schema.interpreter import Interpreter, SchemaNode
+from src.sexp_schema.validator import Validator
 from src.shared.model import Node
 from src.visualizer.cli import TreeRenderer
 from src.spath.engine import SPathEngine
@@ -157,4 +157,5 @@ def path(document: Node | str, path: SPath | str) -> Node:
         document = loads(document)
     if isinstance(path, str):
         path = SPathParser(SPathLexer(path).tokenize()).parse()
-    return SPathEngine().evaluate(document, path)[0]
+    result = SPathEngine().evaluate(document, path)
+    return result[0] if len(result) == 1 else result

@@ -1,6 +1,6 @@
 from typing import Iterable, List
-from spath.ast import Filter, FilterTarget, SPath, Step, CompareOp, Literal
-from shared.model import Node
+from .ast import Filter, FilterTarget, SPath, Step, CompareOp, Literal
+from ..shared.model import Node
 
 
 class SPathEngine:
