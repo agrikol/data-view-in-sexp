@@ -1,6 +1,6 @@
 ### Грамматика
 
-- path    := ('/' | '//')? step (('/' | '//') step)*
-- step    := '.' | '..' | IDENT | '*'
-- filter  := '[' ( '@'? IDENT '=' literal ) ']'
+- path    := (SLASH | DOUBLE_SLASH)? step ( (SLASH | DOUBLE_SLASH) step )*
+- step    := DOT | IDENT filter*
+- filter  := '[' (':'? IDENT) (EQ | NEQ) literal ']'
 - literal := STRING | NUMBER | BOOLEAN | NULL

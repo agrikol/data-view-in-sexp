@@ -12,7 +12,7 @@ class SPathTypes(Enum):
     STRING = "string"
     BOOLEAN = "boolean"
     NULL = "null"
-    AT = "@"
+    COLON = ":"
     LBRACKET = "["
     RBRACKET = "]"
     EOF = "EOF"

@@ -1,5 +1,4 @@
-from typing import List, Tuple, Dict
-from ..shared.model import Node, Scalar
+from typing import List
 from ..core.lexer import BaseLexer, Token
 from ..enum.spath_types import SPathTypes
 from ..errors.sexp_erros import ParserError
@@ -23,6 +22,9 @@ class SPathLexer(BaseLexer):
                     self._advance()
                 case "=":
                     tokens.append(Token(SPathTypes.EQ.name, ch, self.pos))
+                    self._advance()
+                case ":":
+                    tokens.append(Token(SPathTypes.COLON.name, ch, self.pos))
                     self._advance()
                 case "!":
                     tokens.append(self._non_eq())
@@ -62,7 +64,7 @@ class SPathLexer(BaseLexer):
     def _slash(self) -> Token:
         if self._peek(1) == "/":
             self._advance()
-            return Token(SPathTypes.SLASH.name, "//", self.pos)
+            return Token(SPathTypes.DOUBLE_SLASH.name, "//", self.pos)
         return Token(SPathTypes.SLASH.name, "/", self.pos)
 
     def _non_eq(self) -> Token:
