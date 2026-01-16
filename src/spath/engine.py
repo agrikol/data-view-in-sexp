@@ -1,5 +1,4 @@
-from typing import Iterable, List
-from .ast import Filter, FilterTarget, SPath, Step, CompareOp, Literal
+from .ast import Filter, FilterTarget, SPath, Step, CompareOp
 from ..shared.model import Node
 
 
@@ -62,6 +61,11 @@ class SPathEngine:
             lhs = fields[0]
 
         else:
+            print("!!!")
+            print("!!!")
+            print("!!!")
+            print(flt.target.__class__.__module__)
+            print(FilterTarget.__module__)
             raise ValueError(f"Unknown filter target: {flt.target}")
 
         return self._compare(lhs, flt.op, flt.value)

@@ -4,7 +4,7 @@ from ..enums.spath_types import SPathTypes
 from ..errors.sexp_erros import ParserError
 from typing import List
 
-from spath.ast import (
+from ..spath.ast import (
     SPath,
     Step,
     Filter,

@@ -1,5 +1,5 @@
 from src.shared.parser import Lexer, Parser
-from src.sexp_schema.interpreter import Interpreter, SchemaNode
+from src.sexp_schema.interpreter import Interpreter
 from src.sexp_schema.validator import Validator
 from src.shared.model import Node
 from src.visualizer.cli import TreeRenderer

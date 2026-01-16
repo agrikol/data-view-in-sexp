@@ -1,5 +1,6 @@
 import pytest
-from src.shared.parser import Lexer, TokenTypes, Token, ParserError
+from ..src.shared.parser import Lexer, TokenTypes
+from ..src.errors.sexp_erros import ParserError
 
 
 def test_lexer_simple_expression():
@@ -104,7 +105,7 @@ def test_lexer_number_formats():
     assert lexer3[0].value == number3
     assert lexer4[0].type == TokenTypes.NUMBER.name
     assert lexer4[0].value == number4
-    with pytest.raises(ParserError):
-        Lexer(number5).tokenize()
     assert Lexer(number6).tokenize()[0].type == TokenTypes.NUMBER.name
     assert Lexer(number6).tokenize()[0].value == "12.34"
+    with pytest.raises(ParserError):
+        Lexer(number5).tokenize()
