@@ -1,7 +1,7 @@
-from src.shared.model import Node, Scalar
+from ..shared.model import Node, Scalar
 from dataclasses import dataclass, field
 from typing import Literal
-from src.errors.sexp_erros import InterpreterError
+from ..errors.sexp_erros import InterpreterError
 
 
 @dataclass
@@ -28,6 +28,7 @@ class Interpreter:
         return self._interpret_node(self.ast.children[0])
 
     def _interpret_node(self, node: Node) -> SchemaNode:
+        print(node)
         name = node.name
         attr = node.attrs
         children = node.children
@@ -35,6 +36,8 @@ class Interpreter:
         if name != "element":
             raise InterpreterError(f"Expected 'element' node, got '{name}'")
         element_name = attr.get("name")
+        print(element_name, element_name.value, type(element_name))
+        print(isinstance(element_name, Scalar))
         if not isinstance(element_name, Scalar):
             raise InterpreterError("Schema element must have name attribute")
 

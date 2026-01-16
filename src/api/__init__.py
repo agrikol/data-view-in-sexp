@@ -1,1 +1,1 @@
-from .core import loads, dumps, validate, tree
+from .core import loads, dumps, validate, tree, path

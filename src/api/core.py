@@ -1,8 +1,12 @@
 from src.shared.parser import Lexer, Parser
-from src.shared.sexp_schema.interpreter import Interpreter, SchemaNode
-from src.shared.sexp_schema.validator import Validator
+from src.sexp_schema.interpreter import Interpreter, SchemaNode
+from src.sexp_schema.validator import Validator
 from src.shared.model import Node
 from src.visualizer.cli import TreeRenderer
+from src.spath.engine import SPathEngine
+from src.spath.ast import SPath
+from src.spath.spath_parser import SPathParser
+from src.spath.spath_lexer import SPathLexer
 
 
 def loads(text: str) -> Node:
@@ -125,3 +129,33 @@ def tree(document: Node | str) -> None:
     if isinstance(document, str):
         document = loads(document)
     TreeRenderer().render(document)
+
+
+def path(document: Node | str, path: SPath | str) -> Node:
+    """
+    Evaluate a path on a document.
+
+    Parameters
+    ----------
+    document: Node | str
+        Document to evaluate the path on. If it is a string, it is parsed into a Node.
+    path: SPath | str
+        Path to evaluate. If it is a string, it is parsed into a SPath.
+
+    Returns
+    -------
+    Node
+        Result of the evaluation.
+
+    Example
+    --------
+    >>> path(Node(name="person", attrs={"name": Scalar("Alice")}), \
+        '/person')
+    # Node(name='person', attrs={'name': Scalar('Alice')}, children=None, value=None)
+    """
+    if isinstance(document, str):
+        document = loads(document)
+    if isinstance(path, str):
+        path = SPathParser(SPathLexer(path).tokenize()).parse()
+    result = SPathEngine().evaluate(document, path)
+    return result[0] if len(result) == 1 else result
