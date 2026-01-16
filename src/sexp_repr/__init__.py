@@ -1,3 +1,3 @@
-from api import loads, dumps, validate, tree
+from api import loads, dumps, validate, tree, path
 
-__all__ = ["loads", "dumps", "validate", "tree"]
+__all__ = ["loads", "dumps", "validate", "tree", "path"]
