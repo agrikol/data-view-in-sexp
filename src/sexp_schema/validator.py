@@ -1,6 +1,6 @@
-from src.shared.sexp_schema.interpreter import SchemaNode
-from src.shared.model import Node
-from src.errors.sexp_erros import ValidationError
+from .interpreter import SchemaNode
+from ..shared.model import Node
+from ..errors.sexp_erros import ValidationError
 from collections import defaultdict
 
 
